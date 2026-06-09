@@ -9,7 +9,7 @@ export class AuthController {
             const parsedData = CreateUserDTO.safeParse(req.body); // validate request body
             if (!parsedData.success) { // validation failed
                 return res.status(400).json(
-                    { success: false, message: z.prettifyError(parsedData.error) }
+                    { success: false, message: parsedData.error.format() }
                 )
             }
             const userData: CreateUserDTO = parsedData.data;
@@ -29,13 +29,23 @@ export class AuthController {
             const parsedData = LoginUserDTO.safeParse(req.body);
             if (!parsedData.success) {
                 return res.status(400).json(
-                    { success: false, message: z.prettifyError(parsedData.error) }
+                    { success: false, message: parsedData.error.format() }
                 )
             }
             const loginData: LoginUserDTO = parsedData.data;
             const { token, user } = await userService.loginUser(loginData);
+
+            // set httpOnly cookie with JWT
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+                path: '/',
+            });
+
             return res.status(200).json(
-                { success: true, message: "Login successful", data: user, token }
+                { success: true, message: "Login successful", data: user }
             );
 
         } catch (error: Error | any) {

@@ -24,7 +24,10 @@ export class UserService {
 
         // create user
         const newUser = await userRepository.createUser(data);
-        return newUser;
+        // remove sensitive fields before returning
+        const userObj: any = newUser.toObject ? newUser.toObject() : newUser;
+        delete userObj.password;
+        return userObj;
     }
 
     async loginUser(data: LoginUserDTO){
@@ -48,6 +51,8 @@ export class UserService {
             role: user.role
         }
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' }); // 30 days
-        return { token, user }
+        const userObj: any = user.toObject ? user.toObject() : user;
+        delete userObj.password;
+        return { token, user: userObj }
     }
 }
