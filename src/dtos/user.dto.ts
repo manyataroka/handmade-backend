@@ -3,14 +3,14 @@ import { UserSchema } from "../types/user.type";
 // re-use UserSchema from types
 export const CreateUserDTO = UserSchema.pick(
     {
-        firstName: true,
-        lastName: true,
         email: true,
         username: true,
         password: true
     }
-).extend( // add new attribute to zod
+).extend( // add optional first name and last name, plus confirm password
     {
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
         confirmPassword: z.string().min(6)
     }
 ).refine( // extra validation for confirmPassword

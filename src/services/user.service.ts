@@ -41,6 +41,7 @@ export class UserService {
         if(!validPassword){
             throw new HttpError(401, "Invalid credentials");
         }
+        const normalizedRole = user.role || (user.email === 'admin@craftybee.com' || user.username === 'admin' ? 'admin' : 'user');
         // generate jwt
         const payload = { // user identifier
             id: user._id,
@@ -48,11 +49,12 @@ export class UserService {
             username: user.username,
             firstName: user.firstName,
             lastName: user.lastName,
-            role: user.role
+            role: normalizedRole
         }
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' }); // 30 days
         const userObj: any = user.toObject ? user.toObject() : user;
         delete userObj.password;
+        userObj.role = normalizedRole;
         return { token, user: userObj }
     }
 }
