@@ -1,58 +1,58 @@
-// import { UserService } from "../services/user.service";
-// import { CreateUserDTO, LoginUserDTO } from "../dtos/user.dto";
-// import { Request, Response } from "express";
-// import z from "zod";
-// let userService = new UserService();
-// export class AuthController {
-//     async register(req: Request, res: Response) {
-//         try {
-//             const parsedData = CreateUserDTO.safeParse(req.body); // validate request body
-//             if (!parsedData.success) { // validation failed
-//                 return res.status(400).json(
-//                     { success: false, message: parsedData.error.format() }
-//                 )
-//             }
-//             const userData: CreateUserDTO = parsedData.data;
-//             const newUser = await userService.createUser(userData);
-//             return res.status(201).json(
-//                 { success: true, message: "User Created", data: newUser }
-//             );
-//         } catch (error: Error | any) { // exception handling
-//             return res.status(error.statusCode ?? 500).json(
-//                 { success: false, message: error.message || "Internal Server Error" }
-//             );
-//         }
-//     }
+import { UserService } from "../services/user.service";
+import { CreateUserDTO, LoginUserDTO } from "../dtos/user.dto";
+import { Request, Response } from "express";
+import z from "zod";
+let userService = new UserService();
+export class AuthController {
+    async register(req: Request, res: Response) {
+        try {
+            const parsedData = CreateUserDTO.safeParse(req.body); // validate request body
+            if (!parsedData.success) { // validation failed
+                return res.status(400).json(
+                    { success: false, message: parsedData.error.format() }
+                )
+            }
+            const userData: CreateUserDTO = parsedData.data;
+            const newUser = await userService.createUser(userData);
+            return res.status(201).json(
+                { success: true, message: "User Created", data: newUser }
+            );
+        } catch (error: Error | any) { // exception handling
+            return res.status(error.statusCode ?? 500).json(
+                { success: false, message: error.message || "Internal Server Error" }
+            );
+        }
+    }
 
-//     async login(req: Request, res: Response) {
-//         try {
-//             const parsedData = LoginUserDTO.safeParse(req.body);
-//             if (!parsedData.success) {
-//                 return res.status(400).json(
-//                     { success: false, message: parsedData.error.format() }
-//                 )
-//             }
-//             const loginData: LoginUserDTO = parsedData.data;
-//             const { token, user } = await userService.loginUser(loginData);
+    async login(req: Request, res: Response) {
+        try {
+            const parsedData = LoginUserDTO.safeParse(req.body);
+            if (!parsedData.success) {
+                return res.status(400).json(
+                    { success: false, message: parsedData.error.format() }
+                )
+            }
+            const loginData: LoginUserDTO = parsedData.data;
+            const { token, user } = await userService.loginUser(loginData);
 
-//             // set httpOnly cookie with JWT
-//             res.cookie('token', token, {
-//                 httpOnly: true,
-//                 secure: process.env.NODE_ENV === 'production',
-//                 sameSite: 'lax',
-//                 maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-//                 path: '/',
-//             });
+            // set httpOnly cookie with JWT
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+                path: '/',
+            });
 
-//             return res.status(200).json(
-//                 { success: true, message: "Login successful", data: { ...user, token } }
-//             );
+            return res.status(200).json(
+                { success: true, message: "Login successful", data: { ...user, token } }
+            );
 
-//         } catch (error: Error | any) {
-//             return res.status(error.statusCode ?? 500).json(
-//                 { success: false, message: error.message || "Internal Server Error" }
-//             );
-//         }
-//     }
+        } catch (error: Error | any) {
+            return res.status(error.statusCode ?? 500).json(
+                { success: false, message: error.message || "Internal Server Error" }
+            );
+        }
+    }
     
-// }
+}
