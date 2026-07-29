@@ -1,70 +1,70 @@
-{
-  "info": {
-    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef0123456789",
-    "name": "Backend API - Auth",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Register",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane@example.com\",\n  \"username\": \"jdoe\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/auth/register",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "auth",
-            "register"
-          ]
-        }
-      }
-    },
-    {
-      "name": "Login",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/auth/login",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "auth",
-            "login"
-          ]
-        }
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:5000",
-      "type": "string"
-    }
-  ]
-}
+// {
+//   "info": {
+//     "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef0123456789",
+//     "name": "Backend API - Auth",
+//     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+//   },
+//   "item": [
+//     {
+//       "name": "Register",
+//       "request": {
+//         "method": "POST",
+//         "header": [
+//           {
+//             "key": "Content-Type",
+//             "value": "application/json"
+//           }
+//         ],
+//         "body": {
+//           "mode": "raw",
+//           "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane@example.com\",\n  \"username\": \"jdoe\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\"\n}"
+//         },
+//         "url": {
+//           "raw": "{{baseUrl}}/api/auth/register",
+//           "host": [
+//             "{{baseUrl}}"
+//           ],
+//           "path": [
+//             "api",
+//             "auth",
+//             "register"
+//           ]
+//         }
+//       }
+//     },
+//     {
+//       "name": "Login",
+//       "request": {
+//         "method": "POST",
+//         "header": [
+//           {
+//             "key": "Content-Type",
+//             "value": "application/json"
+//           }
+//         ],
+//         "body": {
+//           "mode": "raw",
+//           "raw": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}"
+//         },
+//         "url": {
+//           "raw": "{{baseUrl}}/api/auth/login",
+//           "host": [
+//             "{{baseUrl}}"
+//           ],
+//           "path": [
+//             "api",
+//             "auth",
+//             "login"
+//           ]
+//         }
+//       }
+//     }
+//   ],
+//   "variable": [
+//     {
+//       "key": "baseUrl",
+//       "value": "http://localhost:5000",
+//       "type": "string"
+//     }
+//   ]
+// }
