@@ -7,6 +7,8 @@ export interface IProductRepository {
     updateProduct(id: string, updateData: Partial<IProduct>): Promise<IProduct | null>;
     deleteProduct(id: string): Promise<boolean>;
     getProductByName(name: string): Promise<IProduct | null>;
+    countProducts(query: any): Promise<number>;
+    findProducts(query: any, sort: any, page: number, limit: number): Promise<IProduct[]>;
 }
 
 export class ProductRepository implements IProductRepository {
@@ -34,5 +36,18 @@ export class ProductRepository implements IProductRepository {
 
     async getProductByName(name: string): Promise<IProduct | null> {
         return await ProductModel.findOne({ name });
+    }
+
+    async countProducts(query: any): Promise<number> {
+        return await ProductModel.countDocuments(query);
+    }
+
+    async findProducts(query: any, sort: any, page: number, limit: number): Promise<IProduct[]> {
+        const skip = (page - 1) * limit;
+        return await ProductModel.find(query)
+            .sort(sort)
+            .skip(skip)
+            .limit(limit)
+            .exec();
     }
 }

@@ -3,7 +3,7 @@ import { CreateProductDTO } from "../dtos/product.dto";
 import { Request, Response } from "express";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
-let productService = new ProductService();
+const productService = new ProductService();
 
 export class ProductController {
     async createProduct(req: AuthRequest, res: Response) {
@@ -24,8 +24,24 @@ export class ProductController {
 
     async getAllProducts(req: Request, res: Response) {
         try {
-            const products = await productService.getAllProducts();
-            return res.status(200).json({ success: true, data: products });
+            const { search, category, minPrice, maxPrice, sort, page: pageStr, limit: limitStr, trending, isNewArrival } = req.query;
+            const page = parseInt(pageStr as string) || 1;
+            const limit = parseInt(limitStr as string) || 20;
+            const filters: any = {};
+            if (category) filters.category = category as string;
+            if (minPrice) filters.minPrice = parseFloat(minPrice as string);
+            if (maxPrice) filters.maxPrice = parseFloat(maxPrice as string);
+            if (trending === 'true') filters.trending = true;
+            if (isNewArrival === 'true') filters.isNewArrival = true;
+
+            const result = await productService.getAllProducts({
+                search: search as string,
+                filters,
+                sort: sort as string,
+                page,
+                limit,
+            });
+            return res.status(200).json({ success: true, ...result });
         } catch (error: Error | any) {
             return res.status(error.statusCode ?? 500).json({
                 success: false,
@@ -39,6 +55,20 @@ export class ProductController {
             const { id } = req.params;
             const product = await productService.getProductById(id);
             return res.status(200).json({ success: true, data: product });
+        } catch (error: Error | any) {
+            return res.status(error.statusCode ?? 500).json({
+                success: false,
+                message: error.message || "Internal Server Error",
+            });
+        }
+    }
+
+    async getRelatedProducts(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const limit = parseInt(req.query.limit as string) || 4;
+            const products = await productService.getRelatedProducts(id, limit);
+            return res.status(200).json({ success: true, data: products });
         } catch (error: Error | any) {
             return res.status(error.statusCode ?? 500).json({
                 success: false,

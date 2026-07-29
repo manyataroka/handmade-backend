@@ -27,8 +27,8 @@ export function successResponse<T = any>(
   return {
     success: true,
     message,
-    ...(data !== undefined && { data }),
-    ...(metadata && { metadata }),
+    ...(data !== undefined ? { data } : {}),
+    ...(metadata ? { metadata } : {}),
   };
 }
 
@@ -37,10 +37,14 @@ export function errorResponse(
   statusCode: number = 500,
   error?: any
 ): ApiResponse {
+  // statusCode is passed for convenience when calling this helper,
+  // but it should be used in res.status(statusCode), not returned.
   return {
     success: false,
     message,
-    ...(error && { error: process.env.NODE_ENV === 'development' ? error : undefined }),
+    ...(process.env.NODE_ENV === 'development' && error
+      ? { error }
+      : {}),
   };
 }
 
@@ -50,6 +54,7 @@ export function paginationMetadata(
   limit: number
 ): PaginationMetadata {
   const totalPages = Math.ceil(total / limit);
+
   return {
     page,
     limit,
@@ -59,4 +64,3 @@ export function paginationMetadata(
     hasPrevPage: page > 1,
   };
 }
-

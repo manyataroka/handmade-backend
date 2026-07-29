@@ -14,6 +14,12 @@ export interface CreateOrderParams {
 }
 
 export class OrderRepository {
+    findOrders(query: any, page: number, limit: number) {
+        throw new Error("Method not implemented.");
+    }
+    countOrders(query: any) {
+        throw new Error("Method not implemented.");
+    }
     async create(params: CreateOrderParams): Promise<IOrder> {
         const order = new OrderModel(params);
         return order.save();

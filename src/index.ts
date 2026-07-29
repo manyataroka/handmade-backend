@@ -13,6 +13,11 @@ import authRoutes from './routes/auth.route';
 import productRoutes from './routes/product.route';
 import cartRoutes from './routes/cart.route';
 import orderRoutes from './routes/order.route';
+import userRoutes from './routes/user.route';
+import wishlistRoutes from './routes/wishlist.route';
+import addressRoutes from './routes/address.route';
+import couponRoutes from './routes/coupon.route';
+import adminRoutes from './routes/admin.route';
 import { ProductModel } from './models/product.model';
 import { UserModel } from './models/user.model';
 import bcryptjs from 'bcryptjs';
@@ -63,11 +68,16 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // API version prefix
 const API_PREFIX = '/api/v1';
 
-// Routes
+// Routes (v1 prefixed)
 app.use(`${API_PREFIX}/auth`, authRoutes);
 app.use(`${API_PREFIX}/products`, productRoutes);
 app.use(`${API_PREFIX}/cart`, cartRoutes);
 app.use(`${API_PREFIX}/orders`, orderRoutes);
+app.use(`${API_PREFIX}/users`, userRoutes);
+app.use(`${API_PREFIX}/wishlist`, wishlistRoutes);
+app.use(`${API_PREFIX}/addresses`, addressRoutes);
+app.use(`${API_PREFIX}/coupons`, couponRoutes);
+app.use(`${API_PREFIX}/admin`, adminRoutes);
 
 // Health / welcome
 app.get('/', (req: Request, res: Response) =>
@@ -90,6 +100,11 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/addresses', addressRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Simple error handler (logs and returns JSON)
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

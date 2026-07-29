@@ -3,6 +3,7 @@ import { HttpError } from "../errors/http-error";
 import { OrderRepository } from "../repositories/order.repository";
 import { CartRepository } from "../repositories/cart.repository";
 import { IOrder, IOrderItem, OrderStatus } from "../models/order.model";
+import { paginationMetadata } from "../utils/response";
 
 const orderRepository = new OrderRepository();
 const cartRepository = new CartRepository();
@@ -141,4 +142,65 @@ export class OrderService {
         const orders = await orderRepository.findByUserId(userId);
         return orders.map((o) => formatOrder(o));
     }
-}
+
+    async getOrderById(orderId: string, userId: string, role: string = "user"): Promise<OrderResponse> {
+        const order = await orderRepository.findById(orderId);
+        if (!order) {
+            throw new HttpError(404, "Order not found");
+        }
+        if (role !== "admin" && String(order.userId) !== userId) {
+            throw new HttpError(403, "You can only view your own orders");
+        }
+        return formatOrder(order, role === "admin");
+    }
+
+    async cancelOrder(orderId: string, userId: string): Promise<OrderResponse> {
+        const order = await orderRepository.findById(orderId);
+        if (!order) {
+            throw new HttpError(404, "Order not found");
+        }
+        if (String(order.userId) !== userId) {
+            throw new HttpError(403, "You can only cancel your own orders");
+        }
+        if (order.status !== "Processing") {
+            throw new HttpError(400, "Only orders in 'Processing' status can be cancelled");
+        }
+        order.status = "Cancelled" as OrderStatus;
+        await order.save();
+        return formatOrder(order);
+    }
+
+    async adminListOrders(status?: string, page: number = 1, limit: number = 20) {
+        const query: any = {};
+        if (status) {
+            const validStatuses = ["Processing", "Shipped", "Delivered", "Cancelled"];
+            if (validStatuses.includes(status)) {
+                query.status = status;
+            }
+        }
+
+        const total = await orderRepository.countOrders(query);
+        const orders = await orderRepository.findOrders(query, page, limit);
+        const data = orders.map((o) => formatOrder(o, true));
+
+        return {
+            data,
+            metadata: paginationMetadata(total, page, limit),
+        };
+    }
+
+    async updateOrderStatus(orderId: string, status: string): Promise<OrderResponse> {
+        const validStatuses = ["Processing", "Shipped", "Delivered", "Cancelled"];
+        if (!validStatuses.includes(status)) {
+            throw new HttpError(400, `Invalid status. Valid values: ${validStatuses.join(", ")}`);
+        }
+
+        const order = await orderRepository.findById(orderId);
+        if (!order) {
+            throw new HttpError(404, "Order not found");
+        }
+
+        order.status = status as OrderStatus;
+        await order.save();
+        return formatOrder(order, true);
+    }
